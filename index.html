@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+
+        <title>NGLESS (Luis Pedro Coelho)</title>
+
+        <meta name="description" content="" />
+        <meta name="author" content="Luis Pedro Coelho" />
+
+        <link rel="stylesheet" href="reveal.js/css/reveal.css">
+        <link rel="stylesheet" href="reveal.js/css/theme/simple.css" id="theme">
+
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+        <style>
+            .reveal section blockquote { margin: 0px; padding: 2px; border: 0px; box-shadow: none; }
+            .reveal section img { border: 0px; box-shadow: none; }
+            .reveal h1 { text-transform: none; font-size: 60px; font-variant: small-caps; }
+            .reveal h2 { text-transform: none; font-size: 36px; font-variant: small-caps; text-align: center; }
+            .reveal h3 { text-transform: none; }
+            .reveal code { font-size: 24px; line-height: 1; }
+            .reveal section { font-size:28px; vertical-align: top; text-align: left; }
+        </style>
+        <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+
+        <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+        <div class="reveal">
+            <!-- Any section element inside of this container is displayed as a slide -->
+            <div class="slides">
+                <section style="text-align: left">
+                    <h1>NGLess: a domain-specific language for NGS analysis<br />(the NG-meta-profiler case study)</h1>
+                    <h2 style="padding-top: 2em; color: #993333; margin-bottom:0px; padding-bottom:0px"><strong><u>Luis Pedro Coelho</u></strong>, Renato Alves, Paulo Monteiro, Jaime Huerta-Cepas, Ana Teresa Freitas<br />and Peer Bork</h2>
+                    <p style="padding-top: 0px; margin:0px"><a href="mailto:luispedro@big-data-biology.org">luispedro@big-data-biology.org</a><br />
+                        <a href="https://twitter.com/luispedrocoelho"><img src="Media/twitter.png" style="width: 28px; margin-bottom: -8px; margin-right: 8px" />@luispedrocoelho</p></a>
+
+                        <p style="text-align: right; padding-top: 4em;">
+                            <img style="width: 56%; padding-right:1em" src="Media/ISTBI-logo.png" />
+                            <img style="width: 12%; padding-right: 3em" src="Media/Fudan-logo.png" />
+                            <img style="width: 18%" src="Media/embl-logo.png" /></p>
+                        </p>
+
+                        </p>
+                    </section>
+                    <section>
+                        <section>
+                            <h2>If you are going to be taking any pictures of the slides...</h2>
+
+                            <div class="fragment">
+                                <p>Just take a pic of this one and get <strong>all the slides</strong>:<br />
+                                <img style="float: left" src="all-slides.jpg" />
+                                <img src="qrcode_presentation.svg" style="padding-left: 4em" /><br />
+                                <a href="https://luispedro.github.io/2019-07-25-ngless.talk/">https://luispedro.github.io/2019-07-25-ngless.talk/</a>
+                            </div>
+                        </section>
+                    </section>
+                    <section>
+                        <section>
+                            <h2>Research question</h2>
+                            <p><strong>Setting</strong>: Pipelines combining different tools are important and there are many solutions for them.
+                            <blockquote class="fragment" style="background: #eeeeee; width: 100%; padding: 2em; color: maroon; font-size: 48px" >
+                    If we are willing to sacrifice workflow generality to focus
+                    <strong>specifically on bioinformatics</strong> can we
+                    build a better language and a better tool?
+                            </blockquote>
+                            <div class="fragment">
+                                <p>What is meant by <em>better tool</em>?
+                                <ol> 
+                                    <li>Correctness
+                                    <li>Usability
+                                    <li>Reproducible
+                                    <li>Understandability
+                                    <li>Support best practices
+                                    <li>Performance
+                                </ol>
+                                <p>(in this order)
+                            </div>
+                        </section>
+                        <section>
+                            <h2>What do we want from our bioinformatics pipelines</h2>
+                            
+                            <h3>Usability</h3>
+                            <div>
+                            <div style="width: 40%; float: left">
+                                <ul>
+                                    <li>Work out of the box
+                                    <li>Single click/single command
+                                    <li>Usable by domain experts
+                                </ul>
+                            </div>
+                            <div style="width: 40%; float: right">
+                                <ul>
+                                    <li>Highly flexible (adapt to specific domain)
+                                    <li>Integratable into many settings
+                                    <li>Friendly to bioinformaticians
+                                </ul>
+                            </div>
+                            </div>
+                            
+                            <div style="float: clear; padding-top: 8em" />
+                            
+                            <div class="fragment">
+                                <h3>Stability</h3>
+
+                                <div style="width: 40%; float: left">
+                                    <ul>
+                                        <li>Reproducible
+                                        <li>Stable over many years
+                                    </ul>
+                                </div>
+                                <div style="width: 40%; float: right">
+                                    <ul>
+                                        <li>Evolve with time (agile)
+                                        <li>New versions coming out fast
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                        </section>
+                        <section>
+                            <h2>NGLess</h2>
+                            <pre class="stretch"><code class="python">#!/usr/bin/env ngless
+ngless "1.0"
+import "mocat" version "1.0"
+import "specI" version "1.0"
+import "motus" version "1.0"
+import "igc" version "1.0"
+
+input = load_mocat_sample(ARGV[1])
+RESULTS = ARGV[2]
+
+qc_reads = preprocess(input, keep_singles=False) using |read|:
+    read = substrim(read, min_quality=25)
+    if len(read) &lt; 45:
+        discard
+
+human_mapped = map(qc_reads, reference='hg19')
+
+non_human = select(human_mapped) using |mr|:
+    mr = mr.filter(min_match_size=45, min_identity_pc=90, action={unmatch})
+    if mr.flag({mapped}):
+        discard
+
+non_human_reads = as_reads(non_human)
+
+igc_mapped = map(non_human_reads, reference='igc', mode_all=True)
+igc_mapped_post = select(igc_mapped) using |mr|:
+    mr = mr.filter(min_match_size=45, min_identity_pc=95, action={drop})
+    if not mr.flag({mapped}):
+        discard
+
+igc_counts = count(igc_mapped_post,
+                    features=['OGs'],
+                    multiple={dist1},
+                    normalization={scaled})
+write(igc_counts,
+        ofile=RESULTS &lt;/&gt; 'eggNOG.traditional.counts.txt',
+        auto_comments=[{hash}, {script}]) </code> </pre>
+                        </section>
+                        <section>
+                            <h2>As a programming language</h2>
+
+                            <ul>
+                                <li>Imperative style (as are most widely used languages in bioinformatics, see <a href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005871">Carey et al., 2018</a>)
+                                <li>Python/Ruby inspired-syntax<br />
+                                <li>Statically-typed, but with inferred types
+                                <li>Limited functionality (not Turing-complete)
+                            </ul>
+                            <div class="fragment">
+                                <h2>Adapted to bioinformatics (specifically NGS)</h2>
+                                <h3>Types</h3>
+                                <ul>
+                                    <li>ShortRead
+                                    <li>ShortReadSet
+                                    <li>InputFile
+                                    <li>OutputFile
+                                    <li>...
+                                </ul>
+                            </div>
+                        </section>
+                        <section>
+                            <h2>NGLess fails well</h2>
+                            <blockquote>
+                                Too many tools work well, but fail badly
+                            </blockquote>
+                            <img src="error-messages.png" class="fragment" style="width: 50%" />
+                            <p>Most time in software development is used in debugging <sup>[CITATION NEEDED]</sup>.
+
+                        </section>
+                        <section>
+                            <h2>We treated bad error messages as bugs</h2>
+                            <img src="bad-error-messages-are-bugs.png" />
+                            <p>Sometimes, these are the hardest bugs to fix!</p>
+                            <p>Still, please report bad error messages.</p>
+                        </section>
+                        <section>
+                            <h2>Fail clearly</h2>
+
+                            <p><img src="no-errors.png" style="width: 50%" /></p>
+
+                            <ul>
+                                <li>Never output wrong results
+                                <li>Never output partial results
+                                <li>Fail as fast as possible
+                            </ul>
+                        </section>
+                        <section>
+                            <h2>Check inputs/outputs</h2>
+                            <img src="create-outputs.png" style="width: 50%" />
+                            <ul>
+                                <li>Input/output arguments are annotated as
+                                such, so they are checked <strong>as soon as
+                                possible</strong></li>
+                            </ul>
+                        </section>
+                        <section>
+                            <h2>Check output example</h2>
+                            <pre><code class="python">
+ngless "1.0"
+import "igc" version "1.0"
+import "batch" version "1.0"
+
+input = "inputs/sample.gz.fq"
+seq = fastq(input)
+mapped = map(seq, reference='igc')
+write(mapped, ofile='outputs/sample/igc-mapped.bam') </code> </pre>
+                            <ul>
+                                <li>Very simple: check right at the beginning.
+                            </ul>
+                        </section>
+                        <section>
+                            <h2>Check output example II</h2>
+                            <pre><code class="python">ngless "1.0"
+import "igc" version "1.0"
+import "batch" version "1.0"
+
+inputs = readlines('samples.txt')
+current = inputs[JOBINDEX_OR_0]
+seq = fastq('input/' + current + '.gz.fq')
+mapped = map(seq, reference='igc')
+write(mapped, ofile='outputs/' + current + '/igc-mapped.bam') </code> </pre>
+                            <ul>
+                                <li>A little more complex, but we check right after the line assigning to the <code>current</code> variable.
+                            </ul>
+                        </section>
+                        <section>
+                            <h2>You can annotate the outputs with the NGLess script</h2>
+                            <pre><code class="python">
+write(result,
+        ofile='outputs.tsv',
+        auto_comments=[{hash}, {script}]) </code> </pre>
+
+                            <div class="fragment">
+                            <pre><code class="bash"># Output hash: 48653e1bfc521626e0181a5b0b462805
+# Output generated by:
+#     ngless "1.0"
+#     
+#     counted = count(samfile('input.sam'),
+#           features=['seqname'],
+#           multiple={dist1})
+#     write(counted,
+#             ofile='outputs.tsv',
+#             auto_comments=[{hash}, {script}])
+        basic
+-1      0
+122_DCM_0d2-0d45_scaffold97490_1_gene122702     2
+        </code> </pre>
+                            <p>The output is annotated with the code &amp; a machine-readable hash of it</p>
+                            </div>
+
+                        </section>
+                        <section>
+                            <h2>NGLess is versioned</h2>
+                            <pre><code class="python">ngless "1.0"
+import "igc" version "1.0"
+import "batch" version "1.0"</code></pre>
+
+
+                            <ul>
+                                <li>We can <em>fix mistakes in the language/function API</em> while preserving backwards compatibility.
+
+                            </ul>
+
+                        </section>
+                        <section>
+                            <h2>Separate out "incidental information"</h2>
+                            <img src="everything-tweet.svg" />
+
+                            <ul>
+                                <li>If it changes the results, it must be reflected <strong>in the script</strong>
+                                <li>Otherwise, it is configuration:
+                                    <ul>
+                                        <li>Where to store temporary files
+                                        <li>How many threads to use
+                                        <li>...
+                                    </ul>
+                            </ul>
+                            <p><em>Incidental information</em> is everything that is not central to <strong>what you want to compute</strong>.
+                        </section>
+                        <section>
+                            <h2>NGLess functionality (v1.0)</h2>
+                            <h3>Builtin functionality</h3>
+                            <ul>
+                                <li>FastQ samples preprocessing (internally implemented)
+                                <li>Mapping (through bwa, <a href="https://arxiv.org/abs/1303.3997">Li, 2013</a> or minimap2 <a href="https://academic.oup.com/bioinformatics/article/34/18/3094/4994778">Li, 2018</a>)
+                                <li>Assembly (through megahit, <a href="https://doi.org/10.1093%2Fbioinformatics%2Fbtv033">Li et al., 2015</a>)
+                                <li>ORF calling (through prodigal, <a href="https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-11-119">Hyatt et al., 2010</a>)
+                                <li>Profiling of samples (internally implemented)
+                                <li>Filtering of SAM/BAM files (internally implemented)
+                                <li>...
+                            </ul>
+
+
+                            <div class="fragment">
+                                <h3>NGLess is extensible</h3>
+                                <ol>
+                                    <li>By writing code</li>
+                                    <li>By writing a text file</li>
+                                </ol>
+                                <p>At <a
+                                    href="https://github.com/ngless-toolkit/ngless-contrib">github.com/ngless-toolkit/ngless-contrib</a>,
+                                we have started a collection of external
+                                modules for integration with NGLess:
+                                <ul>
+                                    <li>MetaPhlAn (<a href="https://www.nature.com/articles/nmeth.3589">Truong et al., 2015</a>)
+                                    <li>Salmon  (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5600148/">Patro et al., 2017</a>)
+                                    <li>...
+                                </ul>
+                            </div>
+                        </section>
+                        <section>
+                            <h2>NGLess Module Example</h2>
+
+<pre class="stretch"><code class="yaml">
+version: 2.1.0
+name: motus
+functions:
+  -
+   nglName: motus
+   arg0: ./run.sh
+
+   arg1: 
+     atype: readset
+     can_gzip: true
+   additional:
+       -
+           name: taxonomic_level
+           atype: option
+           def: mOTU
+           allowed:
+               - kingdom
+               - phylum
+               - class
+               - order
+               - family
+               - genus
+               - mOTU
+   return:
+       rtype: counts
+       name: ofile
+       extension: tsv
+init:
+    init_cmd: ./run.sh
+
+citation: &gt;
+    Alessio Milanese, Daniel R Mende, Lucas Paoli, Guillem Salazar,
+    Hans-Joachim Ruscheweyh, Miguelangel Cuenca, Pascal Hingamp, Renato Alves,
+    Paul I Costea, Luis Pedro Coelho, Thomas S B Schmidt, Alexandre Almeida,
+    Alex L Mitchell, Robert D Finn, Jaime Huerta-Cepas, Peer Bork, Georg Zeller
+    and Shinichi Sunagawa. Microbial abundance, activity and population genomic
+    profiling with mOTUs2; Nature Communications 10, Article number: 1014
+    (2019). doi: 10.1038/s41467-019-08844-4
+</code></pre>
+<p>Module for running mOTUs2 <a href="https://doi.org/10.1038/s41467-019-08844-4">(Milanese*, Mende*, et al., 2019)</a>
+                        </section>
+                        <section>
+                            <h2>Make best practices easier/automatic</h2>
+                            <ul>
+                                <li>Best practice: <strong>version all the things</strong>
+                                <li>Best practice: <strong>cite your tools</strong>
+                                <li>Best practice: <strong>quality control your data/outputs</strong>
+                                <li>Best practice: <strong>isolate system-specific information</strong>
+                            </ul>
+                            <p>With NGLess, these are all easier and/or automatic.
+                        </section>
+                    </section>
+                    <section>
+                        <section>
+                            <h2>NG-meta-profiler:</h2>
+                            <ul>
+                                <li>For metagenomics profiling: Take <em>metagenomes</em> and produce <em>feature tables</em></li>
+                                <li>Based on well-validated approach:
+                                    <ol>
+                                        <li>Use a prebuilt gene catalogue</li>
+                                        <li>Annotate this catalog (with eggnog-mapper, <a href="">Huerta-Cepas et al., 2017</a>)</li>
+                                        <li>Map short reads against this catalog</li>
+                                        <li>Transfer the annotation from the genes to the reads</li>
+                                    </ol>
+                            </ul>
+                            <div style="padding-top: 2em" class="fragment">
+                                <h3>Available for different environments</h3>
+                                <div>
+                                    <a href="https://www.nature.com/articles/nbt.2942"><img src="Poop_Emoji_large.png" style="width: 15%" /></a>
+                                    <a href="https://www.nature.com/articles/nbt.3353"><img src="mouse.jpeg" /></a>
+                                    <a href="https://microbiomejournal.biomedcentral.com/articles/10.1186/s40168-018-0450-3"><img src="dog.jpeg" /></a>
+                                    <a href="https://science.sciencemag.org/content/348/6237/1261359.abstract"><img src="ocean.jpeg" /></a>
+
+                                    <p>Based on previously published gene catalogs and <a href="http://eggnog-mapper.embl.de">eggnog-mapper</a> annotations
+                                </div>
+                            </div>
+                        </section>
+                        <section>
+                            <h2>NG-meta-profiler is fast</h2>
+                            <div style="text-align: center">
+                                <img src="Media/ngless/Figure2-benchmark.svg" style="width: 80%" />
+                            </div>
+                            <ul>
+                                <li>NGLess profiling scales to the very large
+                                    gene databases that we use in metagenomics
+                                    (e.g., <a
+                                     href="https://science.sciencemag.org/content/348/6237/1261359.abstract">ocean
+                                     catalog has 40 million genes</a>)
+                            </ul>
+                        </section>
+                    </section>
+                    <section>
+                        <section>
+                            <h2>Where to learn more</h2>
+
+                            <ul>
+                                <li><img src="https://anaconda.org/bioconda/ngless/badges/installer/conda.svg" style="margin-bottom: 0px" />
+                                    <img src="https://anaconda.org/bioconda/ngless/badges/downloads.svg" style="margin-bottom: 0px" />
+                                    <code class="bash">conda install ngless</code>
+                                <li>Coelho et. al, 2019: <a
+                                 href="https://doi.org/10.1186/s40168-019-0684-8">NG-meta-profiler:
+                                 fast processing of metagenomes using NGLess, a
+                                 domain-specific language</a>
+                            
+                                <li>NGLess webpage: <a
+                                 href="https://ngless.embl.de/">https://ngless.embl.de/</a>
+
+                             <li><img src="octocat.png" style="height: 28px; margin-bottom: 0px; " /> <a
+                                     href="https://github.com/ngless-toolkit/ngless">ngless-toolkit/ngless</a>
+                                 &amp;<a
+                                     href="https://github.com/ngless-toolkit/ng-meta-profiler">ngless-toolkit/ng-meta-profiler</a>
+                            <li><a href="https://groups.google.com/forum/#!forum/ngless">NGLess users' mailing list</a>
+                            </ul>
+
+                            <div style="text-align: center;padding-top: 4em">
+                                <img src="qrcode_presentation.svg" style="padding-left: 4em" /><br />
+                                <a href="https://luispedro.github.io/2019-07-25-ngless.talk/">https://luispedro.github.io/2019-07-25-ngless.talk/</a>
+                            </div>
+                            </h3>
+
+                        </section>
+                        <section>
+                            <h2 style="font-size: 60px">Summary</h2>
+                            <ul style="font-size: 40px">
+                                <li>NGLess is <em>a domain-specific language for NGS</em></li>
+                                <li>A domain specific language sacrifices generality for a better user experience</li>
+
+                                <li style="padding-top: 2em">Version 1.0 was recently released</li>
+                                <li>NG-meta-profiler is a collection of pipelines <em>written in NGLess</em></li>
+                            </ul>
+                        </section>
+                        <section>
+                            <h2>Acknowledgements</h2>
+                        <div style="float: left;">
+                            <ul>
+                                <li>Renato Alves (EMBL, Heidelberg, Germany)
+                                <li>Paulo Monteiro (IST, Lisbon, Portugal)
+                                <li>Jaime Huerta-Cepas (EMBL, Heidelberg, Germany)
+                                <li>Ana Teresa Freitas (IST, Lisbon, Portugal)
+                                <li>Peer Bork (EMBL, Heidelberg, Germany)
+                                <li style="padding-top:2em">All the users who submitted bug reports (or praised)</li>
+                            </ul>
+
+
+                        </div>
+                    </section>
+                    <section>
+                        <h1 style="padding-top: 8em; padding-left:15em; text-align:left;">Thank You</h1>
+                    </section>
+                    <section style="text-align: left">
+
+                        <h2>Join us in Shanghai!</h2>
+                        <div style="float:left; padding-top:4em"><img src="Media/shanghai.jpeg" style="width: 660px" /><br /><p>Several postdoc positions open: <a href="http://big-data-biology.org/positions/">http://big-data-biology.org/positions/</a><br />
+                            Talk to me during the break!</p>
+
+                            </p></div>
+                        </p>
+                    </section>
+                </section>
+            </div>
+
+        </div>
+
+        <script src="reveal.js/lib/js/head.min.js"></script>
+        <script src="reveal.js/js/reveal.js"></script>
+
+        <script>
+
+            // Full list of configuration options available at:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                center: false,
+
+                width: 1280,
+                height: 1024,
+
+                theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+                transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+                // Optional reveal.js plugins
+                dependencies: [
+                    { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'reveal.js/plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+                    { src: 'reveal.js/plugin/notes/notes.js', async: true }
+                ]
+            });
+
+        </script>
+
+    </body>
+</html>

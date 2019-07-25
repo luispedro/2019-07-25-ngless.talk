@@ -1,0 +1,46 @@
+My talk on #NGLess at #ISMBECCB #BOSC2019 starts in 7 minutes.
+
+It is in the Delhi room (ground floor). Come over.
+
+https://microbiomejournal.biomedcentral.com/articles/10.1186/s40168-019-0684-8
+
+*
+
+For those of you who couldn't make it to my talk (which just started), I will
+be live-tweeting it. #ISMBECCB #BOSC2019
+
+#NGLess is a Domain-specific programming language for NGS
+
+*
+
+"Too many tools work well, but fail badly" #ISMBECC #BOSC2019
+
+*
+
+I don't actually have a proper citation for the fact that debugging takes a lot
+of time, but if you've ever written anything longer than a 2 line script, this
+is like asking for a citation for water being wet.
+
+When optimizing code, an important principle is to focus effort on the
+bottlenecks, so let's make finding and correcting errors faster.
+
+ #ISMBECCB #BOSC2019
+
+*
+
+Speed of processing is not the most important reason to use the software, speed
+of getting results is and, for many projects, this depends more on usability
+than computational performance. Having said that, #NGLess is actually really
+fast! #ISMBECCB #BOSC2019
+
+*
+
+
+*
+
+Finally, a few links
+
+#NGLess manuscript: https://microbiomejournal.biomedcentral.com/articles/10.1186/s40168-019-0684-8
+
+#NGLess webpage: https://microbiomejournal.biomedcentral.com/articles/10.1186/s40168-019-0684-8
+
